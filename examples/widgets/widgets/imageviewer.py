@@ -23,23 +23,24 @@
 ##
 #############################################################################
 
-from PySide2 import QtCore, QtGui
+from PySide2 import QtCore, QtGui, QtWidgets, QtPrintSupport
 
 
-class ImageViewer(QtGui.QMainWindow):
+class ImageViewer(QtWidgets.QMainWindow):
     def __init__(self):
         super(ImageViewer, self).__init__()
 
-        self.printer = QtGui.QPrinter()
+        #self.printer = QtGui.QPrinter()
+        self.printer = QtPrintSupport.QPrinter()
         self.scaleFactor = 0.0
 
-        self.imageLabel = QtGui.QLabel()
+        self.imageLabel = QtWidgets.QLabel()
         self.imageLabel.setBackgroundRole(QtGui.QPalette.Base)
-        self.imageLabel.setSizePolicy(QtGui.QSizePolicy.Ignored,
-                QtGui.QSizePolicy.Ignored)
+        self.imageLabel.setSizePolicy(QtWidgets.QSizePolicy.Ignored,
+                QtWidgets.QSizePolicy.Ignored)
         self.imageLabel.setScaledContents(True)
 
-        self.scrollArea = QtGui.QScrollArea()
+        self.scrollArea = QtWidgets.QScrollArea()
         self.scrollArea.setBackgroundRole(QtGui.QPalette.Dark)
         self.scrollArea.setWidget(self.imageLabel)
         self.setCentralWidget(self.scrollArea)
@@ -51,12 +52,12 @@ class ImageViewer(QtGui.QMainWindow):
         self.resize(500, 400)
 
     def open(self):
-        fileName,_ = QtGui.QFileDialog.getOpenFileName(self, "Open File",
+        fileName,_ = QtWidgets.QFileDialog.getOpenFileName(self, "Open File",
                 QtCore.QDir.currentPath())
         if fileName:
             image = QtGui.QImage(fileName)
             if image.isNull():
-                QtGui.QMessageBox.information(self, "Image Viewer",
+                QtWidgets.QMessageBox.information(self, "Image Viewer",
                         "Cannot load %s." % fileName)
                 return
 
@@ -71,7 +72,7 @@ class ImageViewer(QtGui.QMainWindow):
                 self.imageLabel.adjustSize()
 
     def print_(self):
-        dialog = QtGui.QPrintDialog(self.printer, self)
+        dialog = QtPrintSupport.QPrintDialog(self.printer, self)
         if dialog.exec_():
             painter = QtGui.QPainter(self.printer)
             rect = painter.viewport()
@@ -100,7 +101,7 @@ class ImageViewer(QtGui.QMainWindow):
         self.updateActions()
 
     def about(self):
-        QtGui.QMessageBox.about(self, "About Image Viewer",
+        QtWidgets.QMessageBox.about(self, "About Image Viewer",
                 "<p>The <b>Image Viewer</b> example shows how to combine "
                 "QLabel and QScrollArea to display an image. QLabel is "
                 "typically used for displaying text, but it can also display "
@@ -116,48 +117,48 @@ class ImageViewer(QtGui.QMainWindow):
                 "print an image.</p>")
 
     def createActions(self):
-        self.openAct = QtGui.QAction("&Open...", self, shortcut="Ctrl+O",
+        self.openAct = QtWidgets.QAction("&Open...", self, shortcut="Ctrl+O",
                 triggered=self.open)
 
-        self.printAct = QtGui.QAction("&Print...", self, shortcut="Ctrl+P",
+        self.printAct = QtWidgets.QAction("&Print...", self, shortcut="Ctrl+P",
                 enabled=False, triggered=self.print_)
 
-        self.exitAct = QtGui.QAction("E&xit", self, shortcut="Ctrl+Q",
+        self.exitAct = QtWidgets.QAction("E&xit", self, shortcut="Ctrl+Q",
                 triggered=self.close)
 
-        self.zoomInAct = QtGui.QAction("Zoom &In (25%)", self,
+        self.zoomInAct = QtWidgets.QAction("Zoom &In (25%)", self,
                 shortcut="Ctrl++", enabled=False, triggered=self.zoomIn)
 
-        self.zoomOutAct = QtGui.QAction("Zoom &Out (25%)", self,
+        self.zoomOutAct = QtWidgets.QAction("Zoom &Out (25%)", self,
                 shortcut="Ctrl+-", enabled=False, triggered=self.zoomOut)
 
-        self.normalSizeAct = QtGui.QAction("&Normal Size", self,
+        self.normalSizeAct = QtWidgets.QAction("&Normal Size", self,
                 shortcut="Ctrl+S", enabled=False, triggered=self.normalSize)
 
-        self.fitToWindowAct = QtGui.QAction("&Fit to Window", self,
+        self.fitToWindowAct = QtWidgets.QAction("&Fit to Window", self,
                 enabled=False, checkable=True, shortcut="Ctrl+F",
                 triggered=self.fitToWindow)
 
-        self.aboutAct = QtGui.QAction("&About", self, triggered=self.about)
+        self.aboutAct = QtWidgets.QAction("&About", self, triggered=self.about)
 
-        self.aboutQtAct = QtGui.QAction("About &Qt", self,
-                triggered=QtGui.qApp.aboutQt)
+        self.aboutQtAct = QtWidgets.QAction("About &Qt", self,
+                triggered=QtWidgets.qApp.aboutQt)
 
     def createMenus(self):
-        self.fileMenu = QtGui.QMenu("&File", self)
+        self.fileMenu = QtWidgets.QMenu("&File", self)
         self.fileMenu.addAction(self.openAct)
         self.fileMenu.addAction(self.printAct)
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.exitAct)
 
-        self.viewMenu = QtGui.QMenu("&View", self)
+        self.viewMenu = QtWidgets.QMenu("&View", self)
         self.viewMenu.addAction(self.zoomInAct)
         self.viewMenu.addAction(self.zoomOutAct)
         self.viewMenu.addAction(self.normalSizeAct)
         self.viewMenu.addSeparator()
         self.viewMenu.addAction(self.fitToWindowAct)
 
-        self.helpMenu = QtGui.QMenu("&Help", self)
+        self.helpMenu = QtWidgets.QMenu("&Help", self)
         self.helpMenu.addAction(self.aboutAct)
         self.helpMenu.addAction(self.aboutQtAct)
 
@@ -189,7 +190,7 @@ if __name__ == '__main__':
 
     import sys
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     imageViewer = ImageViewer()
     imageViewer.show()
     sys.exit(app.exec_())
