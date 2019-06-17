@@ -1,3 +1,17 @@
+Converting 'old' examples to PySide2/Qt5.12
+===========================================
+```
+'Many' classes moved from QtGui to QtWidget
+
+QtGui.QWidget -> QtWidget.Qwidget
+QtGui.QPrinter() -> QtPrintSupport.QPrinter()
+
+str(f.readAll())) -> f.readAll.data.decode()
+                     f.readAll -> returns QByteArray
+                              .data() -> returns 'bytes'
+                                     .decode() -> returns 'str'
+    
+```
 Examples
 ========
 

@@ -23,7 +23,7 @@
 ##
 ############################################################################
 
-from PySide2 import QtCore, QtGui
+from PySide2 import QtCore, QtGui, QtWidgets
 
 import simpletreemodel_rc
 
@@ -178,14 +178,19 @@ if __name__ == '__main__':
 
     import sys
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     f = QtCore.QFile(':/default.txt')
     f.open(QtCore.QIODevice.ReadOnly)
-    model = TreeModel(str(f.readAll()))
+    #model = TreeModel(str(f.readAll()))
+    # f.readAll -> returns QByteArray
+    #          .data() -> returns 'bytes'
+    #                 .decode() -> returns 'str'
+    data = f.readAll().data().decode()
+    model = TreeModel(data)
     f.close()
 
-    view = QtGui.QTreeView()
+    view = QtWidgets.QTreeView()
     view.setModel(model)
     view.setWindowTitle("Simple Tree Model")
     view.show()
