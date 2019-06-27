@@ -23,10 +23,10 @@
 ##
 #############################################################################
 
-from PySide2 import QtCore, QtGui
+from PySide2 import QtCore, QtGui, QtWidgets
 
 
-class AnalogClock(QtGui.QWidget):
+class AnalogClock(QtWidgets.QWidget):
     hourHand = QtGui.QPolygon([
         QtCore.QPoint(7, 8),
         QtCore.QPoint(-7, 8),
@@ -52,7 +52,20 @@ class AnalogClock(QtGui.QWidget):
         self.setWindowTitle("Analog Clock")
         self.resize(200, 200)
 
+    def update(self, *args, **kwargs):
+        print("update: args = {}, kwargs = {}".format(args, kwargs))
+        super(AnalogClock, self).update(*args, **kwargs)
+
+    def mousePressEvent(self, *args, **kwargs):
+        print("mousePressEvent: args = {}, kwargs = {}".format(args, kwargs))
+        super(AnalogClock, self).mousePressEvent(*args, **kwargs)
+
     def paintEvent(self, event):
+        """paintEvent() is called whenever the widget needs to be repainted.
+        Every widget displaying custom content must implement it. Painting using a QPainter can only take place
+        in a paintEvent() or a function called by a paintEvent().
+        """
+        print("paintEvent: event = {}".format(event))
         side = min(self.width(), self.height())
         time = QtCore.QTime.currentTime()
 
@@ -95,7 +108,7 @@ if __name__ == '__main__':
 
     import sys
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     clock = AnalogClock()
     clock.show()
     sys.exit(app.exec_())

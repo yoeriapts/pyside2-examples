@@ -25,15 +25,15 @@
 
 import math
 
-from PySide2 import QtCore, QtGui
+from PySide2 import QtCore, QtGui, QtWidgets
 
 
-class Button(QtGui.QToolButton):
+class Button(QtWidgets.QToolButton):
     def __init__(self, text, parent=None):
         super(Button, self).__init__(parent)
 
-        self.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                QtGui.QSizePolicy.Preferred)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
+                QtWidgets.QSizePolicy.Preferred)
         self.setText(text)
 
     def sizeHint(self):
@@ -43,7 +43,7 @@ class Button(QtGui.QToolButton):
         return size
 
 
-class Calculator(QtGui.QDialog):
+class Calculator(QtWidgets.QDialog):
     NumDigitButtons = 10
 
     def __init__(self, parent=None):
@@ -57,7 +57,7 @@ class Calculator(QtGui.QDialog):
         self.factorSoFar = 0.0
         self.waitingForOperand = True
 
-        self.display = QtGui.QLineEdit('0')
+        self.display = QtWidgets.QLineEdit('0')
         self.display.setReadOnly(True)
         self.display.setAlignment(QtCore.Qt.AlignRight)
         self.display.setMaxLength(15)
@@ -101,8 +101,8 @@ class Calculator(QtGui.QDialog):
                 self.unaryOperatorClicked)
         self.equalButton = self.createButton("=", self.equalClicked)
 
-        mainLayout = QtGui.QGridLayout()
-        mainLayout.setSizeConstraint(QtGui.QLayout.SetFixedSize)
+        mainLayout = QtWidgets.QGridLayout()
+        mainLayout.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
 
         mainLayout.addWidget(self.display, 0, 0, 1, 6)
         mainLayout.addWidget(self.backspaceButton, 1, 0, 1, 2)
@@ -331,6 +331,6 @@ if __name__ == '__main__':
 
     import sys
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     calc = Calculator()
     sys.exit(calc.exec_())
