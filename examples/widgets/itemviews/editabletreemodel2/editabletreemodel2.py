@@ -130,9 +130,12 @@ class TreeModel(QtCore.QAbstractItemModel):
         return item.data(index.column())
 
     def flags(self, index):
+        print("index:{}".format(index))
         if not index.isValid():
             return 0
-
+        if index.column() == 2:
+            # return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
+            return QtCore.Qt.ItemIsSelectable
         return QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
 
     def getItem(self, index):
@@ -282,9 +285,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setupUi(self)
 
-        headers = ("Title", "Description")
+        headers = ("Title", "Description", "Whatever")
 
-        file = QtCore.QFile(':/default.txt')
+        file = QtCore.QFile('./default2.txt')       # read actual file iso precompiled resource
         file.open(QtCore.QIODevice.ReadOnly)
         #model = TreeModel(headers, str(file.readAll()))
         # file.readAll -> returns QByteArray

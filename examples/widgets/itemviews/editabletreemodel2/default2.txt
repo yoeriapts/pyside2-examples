@@ -1,0 +1,40 @@
+Getting Started				How to familiarize yourself with Qt Designer		the 3rd column
+    Launching Designer			Running the Qt Designer application		the 3rd column
+    The User Interface			How to interact with Qt Designer		the 3rd column
+
+Designing a YA Component			Creating a GUI for your application		the 3rd column
+    Creating a Dialog			How to create a dialog		the 3rd column
+    Composing the Dialog		Putting widgets into the dialog example		the 3rd column
+    Creating a Layout			Arranging widgets on a form		the 3rd column
+    Signal and Slot Connections		Making widget communicate with each other		the 3rd column
+
+Using a Component in Your Application	Generating code from forms		the 3rd column
+    The Direct Approach			Using a form without any adjustments		the 3rd column
+    The Single Inheritance Approach	Subclassing a form's base class		the 3rd column
+    The Multiple Inheritance Approach	Subclassing the form itself		the 3rd column
+    Automatic Connections		Connecting widgets using a naming scheme		the 3rd column
+        A Dialog Without Auto-Connect	How to connect widgets without a naming scheme		the 3rd column
+        A Dialog With Auto-Connect	Using automatic connections		the 3rd column
+
+Form Editing Mode			How to edit a form in Qt Designer		the 3rd column
+    Managing Forms			Loading and saving forms		the 3rd column
+    Editing a Form			Basic editing techniques		the 3rd column
+    The Property Editor			Changing widget properties		the 3rd column
+    The Object Inspector		Examining the hierarchy of objects on a form		the 3rd column
+    Layouts				Objects that arrange widgets on a form		the 3rd column
+        Applying and Breaking Layouts	Managing widgets in layouts 		the 3rd column
+        Horizontal and Vertical Layouts	Standard row and column layouts		the 3rd column
+        The Grid Layout			Arranging widgets in a matrix		the 3rd column
+    Previewing Forms			Checking that the design works		the 3rd column
+
+Using Containers			How to group widgets together		the 3rd column
+    General Features			Common container features		the 3rd column
+    Frames				QFrame		the 3rd column
+    Group Boxes				QGroupBox		the 3rd column
+    Stacked Widgets			QStackedWidget		the 3rd column
+    Tab Widgets				QTabWidget		the 3rd column
+    Toolbox Widgets			QToolBox		the 3rd column
+
+Connection Editing Mode			Connecting widgets together with signals and slots		the 3rd column
+    Connecting Objects			Making connections in Qt Designer		the 3rd column
+    Editing Connections			Changing existing connections		the 3rd column

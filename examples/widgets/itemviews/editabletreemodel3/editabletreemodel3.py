@@ -114,7 +114,7 @@ class TreeModel(QtCore.QAbstractItemModel):
 
         rootData = [header for header in headers]
         self.rootItem = TreeItem(rootData)
-        self.setupModelData(data.split("\n"), self.rootItem)
+        self.setupModelData(data, self.rootItem)
 
     def columnCount(self, parent=QtCore.QModelIndex()):
         return self.rootItem.columnCount()
@@ -130,10 +130,16 @@ class TreeModel(QtCore.QAbstractItemModel):
         return item.data(index.column())
 
     def flags(self, index):
+        #print("index:{}".format(index))
         if not index.isValid():
             return 0
-
-        return QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
+        if index.column() == 0:
+            return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
+        elif index.column() == 2:
+            # return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
+            return QtCore.Qt.ItemIsSelectable
+        else:
+            return QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
 
     def getItem(self, index):
         if index.isValid():
@@ -234,47 +240,23 @@ class TreeModel(QtCore.QAbstractItemModel):
 
         return result
 
-    def setupModelData(self, lines, parent):
-        parents = [parent]
-        indentations = [0]
+    def setupModelData(self, data, parent):
 
-        number = 0
-
-        while number < len(lines):
-            position = 0
-            while position < len(lines[number]):
-                if lines[number][position] != " ":
-                    break
-                position += 1
-
-            lineData = lines[number][position:].strip()
-
-            if lineData:
-                # Read the column data from the rest of the line.
-                columnData = [s for s in lineData.split('\t') if s]
-
-                if position > indentations[-1]:
-                    # The last child of the current parent is now the new
-                    # parent unless the current parent has no children.
-
-                    if parents[-1].childCount() > 0:
-                        parents.append(parents[-1].child(parents[-1].childCount() - 1))
-                        indentations.append(position)
-
+        def iterdict(d, depth, parent):
+            print(depth)
+            for i, (k, v) in enumerate(d.items()):
+                if isinstance(v, dict):
+                    parent.insertChildren(depth, 1, 3)
+                    parent.child(depth).setData(0, k)
+                    iterdict(v, depth+1, parent.child(depth))
                 else:
-                    while position < indentations[-1] and len(parents) > 0:
-                        parents.pop()
-                        indentations.pop()
+                    print(depth, i, k, ":", v)
+                    parent.insertChildren(i, 1, 3)
+                    parent.child(i).setData(0, k)
+                    parent.child(i).setData(1, v)
+                    parent.child(i).setData(2, "duh?")
 
-                # Append a new item to the current parent's list of children.
-                parent = parents[-1]
-                parent.insertChildren(parent.childCount(), 1,
-                        self.rootItem.columnCount())
-                for column in range(len(columnData)):
-                    parent.child(parent.childCount() -1).setData(column, columnData[column])
-
-            number += 1
-
+        iterdict(data, 0, parent)
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -282,34 +264,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setupUi(self)
 
-        headers = ("Title", "Description")
-
-        file = QtCore.QFile(':/default.txt')
-        file.open(QtCore.QIODevice.ReadOnly)
-        #model = TreeModel(headers, str(file.readAll()))
-        # file.readAll -> returns QByteArray
-        #             .data() -> returns 'bytes'
-        #                   .decode() -> returns 'str'
-        data = file.readAll().data().decode()
-        model = TreeModel(headers, data)
-        file.close()
-
-        self.view.setModel(model)
-        for column in range(model.columnCount(QtCore.QModelIndex())):
-            self.view.resizeColumnToContents(column)
-
         self.exitAction.triggered.connect(QtGui.qApp.quit)
-
-        self.view.selectionModel().selectionChanged.connect(self.updateActions)
-
         self.actionsMenu.aboutToShow.connect(self.updateActions)
         self.insertRowAction.triggered.connect(self.insertRow)
         self.insertColumnAction.triggered.connect(self.insertColumn)
         self.removeRowAction.triggered.connect(self.removeRow)
         self.removeColumnAction.triggered.connect(self.removeColumn)
         self.insertChildAction.triggered.connect(self.insertChild)
+        self.showPyObjAction.triggered.connect(self.showPyObj)
 
+    def setTreeModel(self, headers=None, data=None):
+
+        model = TreeModel(headers, data)
+
+        self.view.setModel(model)
+        self.view.expandAll()   # will show all subtrees expanded
+        for column in range(model.columnCount(QtCore.QModelIndex())):
+            self.view.resizeColumnToContents(column)
+
+        self.view.selectionModel().selectionChanged.connect(self.updateActions)
         self.updateActions()
+
 
     def insertChild(self):
         index = self.view.selectionModel().currentIndex()
@@ -399,12 +374,50 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             else:
                 self.statusBar().showMessage("Position: (%d,%d) in top level" % (row, column))
 
+    def showPyObj(selfself, *args, **kwargs):
+        print("showPyObj: args={} kwargs={}".format(args, kwargs))
+
+
+def get_params():
+
+    # Parameters: a dict of dicts
+    p = dict()
+    p['Operation'] = dict()
+    p['Operation']['OtherPID'] = "No"
+    p['Operation']['OutputFolder'] = "C:\\Production\\Bobcat320\\Correction"
+    p['Operation']['Interactive'] = "No"
+    p['Operation']['SaveToCamera'] = "Yes"
+
+    p['Parameters'] = dict()
+    p['Parameters']['ThrBlackLevel'] = 250
+    p['Parameters']['ThrGreyLevel'] = 250
+    p['Parameters']['ThrBlackNoise'] = 600
+    p['Parameters']['ThrGreyNoise'] = 600
+
+    p['Parameters']['PostNUCGain'] = 1.4
+    p['Parameters']['KeepOffset'] = "Yes"
+
+    p['Parameters']['Clip'] = dict()
+    p['Parameters']['Clip']['Black'] = 0
+    p['Parameters']['Clip']['White'] = 46000
+
+    p['Parameters']['Clip']['Details'] = dict()
+    p['Parameters']['Clip']['Details']['fidget'] = "fedgit"
+    p['Parameters']['Clip']['Details']['trinket'] = "trenkit"
+
+    p['element'] = "a string"
+
+    return p
+
 
 if __name__ == '__main__':
 
     import sys
 
+    p = get_params()
+
     app = QtWidgets.QApplication(sys.argv)
     window = MainWindow()
+    window.setTreeModel(headers = ("Parameter", "Value", "Description"), data=p)
     window.show()
     sys.exit(app.exec_())
